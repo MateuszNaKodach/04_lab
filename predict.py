@@ -37,7 +37,6 @@ def get_validate_data():
 
 
 def naive_bayess_predictor(x_train, y_train):
-    y_train = y_train.transpose()
     clf = GaussianNB()
     clf.fit(x_train, y_train)  # wylicza parametry do bayessa
     return clf
@@ -50,7 +49,6 @@ def predict(x):
     :param x: macierz o wymiarach NxD
     :return: wektor o wymiarach Nx1
     """
-    learn_data = get_learn_data()
     x_train = get_learn_data()[0]
     y_train = get_learn_data()[1]
 
@@ -60,8 +58,9 @@ def predict(x):
     nbp = naive_bayess_predictor(x_train, y_train)
 
     result = np.array(nbp.predict(x_valid)).transpose()
-    print(result)
-    print(y_valid)
+    print((result.transpose()==y_valid).sum())
+    print(np.count_nonzero(result.transpose()==y_valid))
+    print(y_train.shape[AXIS_ROWS])
 
 
-    pass
+    return result

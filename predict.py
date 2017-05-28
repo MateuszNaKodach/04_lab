@@ -8,7 +8,6 @@
 
 import pickle as pkl
 import numpy as np
-from sklearn.naive_bayes import GaussianNB
 
 AXIS_ROWS = 0
 AXIS_COLUMNS = 1
@@ -52,15 +51,16 @@ def predict(x):
     x_train = get_learn_data()[0]
     y_train = get_learn_data()[1]
 
-    x_valid = get_validate_data()[0]
-    y_valid = get_validate_data()[1]
+    #x_valid = get_validate_data()[0]
+    #y_valid = get_validate_data()[1]
 
     nbp = naive_bayess_predictor(x_train, y_train)
 
-    result = np.array(nbp.predict(x_valid)).transpose()
-    print((result.transpose()==y_valid).sum())
-    print(np.count_nonzero(result.transpose()==y_valid))
-    print(y_train.shape[AXIS_ROWS])
+    result = np.array(nbp.predict(x)).transpose()
+    #result = np.array(nbp.predict(x_valid)).transpose()
+    #print((result.transpose()==y_valid).sum())
+    #print(np.count_nonzero(result.transpose()==y_valid))
+    #print(y_train.shape[AXIS_ROWS])
 
 
     return result

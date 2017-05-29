@@ -1,7 +1,8 @@
 
 import unittest
+import pickle as pkl
 from unittest import makeSuite
-from content import run_program
+from content import run_program, get_compressed_data
 
 
 class TestRunner(unittest.TextTestRunner):
@@ -21,6 +22,11 @@ class TestSuite(unittest.TestSuite):
 
 class TestSigmoid(unittest.TestCase):
     def test_sigmoid(self):
+        #save_data(get_compressed_data(),'trainCompressed.pkl')
         predicted = run_program()
         self.assertEqual(0,0)
 
+def save_data(data, file_name):
+    output = open(file_name, 'wb')
+    pkl.dump(data, output)
+    return

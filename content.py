@@ -6,17 +6,28 @@ import numpy as np
 AXIS_ROWS = 0
 AXIS_COLUMNS = 1
 CLASSES_AMOUNT = 36
-NN_K = 3
+NN_K = 1
+
+ACTIVATION = 5
 
 # wczytuje dane ze zbioru - biore 6 tys egzemplarzy
 def get_main_data():
-    x_data, y_data = pkl.load(open('train.pkl', mode='rb'))
+    x_data, y_data = pkl.load(open('trainCompressed.pkl', mode='rb'))
+
     #x_data = x_data[0:6000]
     #y_data = y_data[0:6000]
-    x_data = x_data[0:9000]
-    y_data = y_data[0:9000]
+    x_data = x_data[0:6000]
+    y_data = y_data[0:6000]
     return x_data, y_data
 
+def get_compressed_data():
+    return compress_data(get_main_data())
+
+def compress_data(data):
+    x_data = data[0]
+    y_data = data[1]
+
+    return   np.array(list(map(lambda x: compress_image_x3(x, ACTIVATION), x_data))), y_data
 
 # wybieram dane uczace, 70 procent zbioru
 def get_learn_data():
@@ -106,8 +117,8 @@ def run_program():
     y_valid = validate_data[1]
     from predict import predict
     predicted = predict(x_valid)
-    print("BLAD KLASYFIKACJI:")
-    print(classification_error(predicted,y_valid))
+    print("DOBRZE PRZEWIDZIANYCH:")
+    print(check_prediction(predicted,y_valid))
     """
     print("PREDICTED")
     print(predicted)
@@ -115,3 +126,68 @@ def run_program():
     print(y_valid)
     print()
     """
+
+def check_prediction(result_to_chech, y_true):
+    error_count = 0
+    for i in range(result_to_chech.shape[0]):
+        if result_to_chech[i][0] == y_true[i][0]:
+            error_count += 1
+
+    return error_count * 1.0 / result_to_chech.shape[0]
+
+
+def compress_image_x2(image, activation):
+    side = int(np.sqrt(image.shape[0]))
+    new_size = image.shape[0] / 4
+    to_return = np.zeros(shape=new_size, dtype=np.uint8)
+
+    def new_val(v1, v2, v3, v4):
+        return 1 if v1 + v2 + v3 + v4 > activation else 0
+
+    for a in range(28):
+        for b in range(28):
+            to_return[a + b * side / 2] = new_val(image[a * 2 + 2 * b * side], image[a * 2 + 1 + 2 * b * side],
+                                                  image[a * 2 + 1 + (2 * b + 1) * side],
+                                                  image[a * 2 + (2 * b + 1) * side])
+
+    return to_return
+
+
+def compress_image_x3(image, activation):
+    side = int(np.sqrt(image.shape[0]))
+    new_size = 324
+    to_return = np.zeros(shape=new_size, dtype=np.uint8)
+
+    def new_val(a, b):
+        s = 0
+        for aaa in range(3):
+            for bbb in range(3):
+                s += image[a * 3 + aaa + (b * 3 + bbb) * side]
+        return 1 if s >= activation else 0
+
+    for aa in range(18):
+        for bb in range(18):
+            to_return[aa + bb * 18] = new_val(aa, bb)
+
+    return to_return
+
+
+def compress_image_x4(image, activation):
+    side = 56
+    new_size = 196
+    to_return = np.zeros(shape=new_size, dtype=np.uint8)
+
+    def new_val(a, b):
+        s = 0
+        for aaa in range(4):
+            for bbb in range(4):
+                s += image[a * 4 + aaa + (b * 4 + bbb) * side]
+        return 1 if s >= activation else 0
+
+    for aa in range(14):
+        for bb in range(14):
+            to_return[aa + bb * 14] = new_val(aa, bb)
+
+    return to_return
+
+

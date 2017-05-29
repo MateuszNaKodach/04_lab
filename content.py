@@ -6,11 +6,13 @@ import numpy as np
 AXIS_ROWS = 0
 AXIS_COLUMNS = 1
 CLASSES_AMOUNT = 36
-NN_K = 1
+NN_K = 5
+DATA_AMOUNT = 12000
 
-ACTIVATION = 5
+ACTIVATION = 3
 
 # wczytuje dane ze zbioru - biore 6 tys egzemplarzy
+"""
 def get_main_data():
     x_data, y_data = pkl.load(open('trainCompressed.pkl', mode='rb'))
 
@@ -18,6 +20,16 @@ def get_main_data():
     #y_data = y_data[0:6000]
     x_data = x_data[0:6000]
     y_data = y_data[0:6000]
+    return x_data, y_data
+"""
+
+def get_main_data():
+    x_data, y_data = pkl.load(open('trainCompressed.pkl', mode='rb'))
+
+    #x_data = x_data[0:6000]
+    #y_data = y_data[0:6000]
+    x_data = x_data[0:DATA_AMOUNT]
+    y_data = y_data[0:DATA_AMOUNT]
     return x_data, y_data
 
 def get_compressed_data():

@@ -14,16 +14,20 @@ AXIS_COLUMNS = 1
 
 
 # wczytuje dane ze zbioru
-def get_main_data():
-    with open('train.pkl', 'rb') as f:
-        return pkl.load(f)
 
+def get_main_data():
+    x_data, y_data = pkl.load(open('train.pkl', mode='rb'))
+    x_data = x_data[0:6000]
+    y_data = y_data[0:6000]
+    return x_data, y_data
 
 # wybieram dane uczace, 70 procent zbioru
 def get_learn_data():
-    x_train = get_main_data()[0]
-    y_train = get_main_data()[1]
+    data = get_main_data()
+    x_train = data[0]
+    y_train = data[1]
 
+    #return (x_train)[0:int(x_train.shape[AXIS_ROWS] * 0.7)], y_train[0:int(y_train.shape[AXIS_ROWS] * 0.7)]
     return (x_train)[0:int(x_train.shape[AXIS_ROWS] * 0.7)], y_train[0:int(y_train.shape[AXIS_ROWS] * 0.7)]
 
 
@@ -35,10 +39,17 @@ def get_validate_data():
         x_validate.shape[AXIS_ROWS] * 0.7):x_validate.shape[AXIS_ROWS]]
 
 
-def naive_bayess_predictor(x_train, y_train):
-    clf = GaussianNB()
-    clf.fit(x_train, y_train)  # wylicza parametry do bayessa
-    return clf
+def hamming_distance(X, X_train):
+    """
+    :param X: zbior porownwanych obiektow N1xD
+    :param X_train: zbior obiektow do ktorych porownujemy N2xD
+    Funkcja wyznacza odleglosci Hamminga obiektow ze zbioru X od
+    obiektow X_train. ODleglosci obiektow z jednego i drugiego
+    zbioru zwrocone zostana w postaci macierzy
+    :return: macierz odleglosci pomiedzy obiektami z X i X_train N1xN2
+    """
+    #uint16
+    return X.astype(np.uint16) @ ~(X_train.transpose().astype(bool)) + ~(X.astype(bool)) @ X_train.astype(np.uint16).transpose()
 
 
 def predict(x):
@@ -51,16 +62,11 @@ def predict(x):
     x_train = get_learn_data()[0]
     y_train = get_learn_data()[1]
 
-    #x_valid = get_validate_data()[0]
-    #y_valid = get_validate_data()[1]
 
-    nbp = naive_bayess_predictor(x_train, y_train)
+    x_valid = get_validate_data()[0]
+   # y_valid = get_validate_data()[1]
 
-    result = np.array(nbp.predict(x)).transpose()
-    #result = np.array(nbp.predict(x_valid)).transpose()
-    #print((result.transpose()==y_valid).sum())
-    #print(np.count_nonzero(result.transpose()==y_valid))
-    #print(y_train.shape[AXIS_ROWS])
+    result = hamming_distance(x_valid,x_train)
 
-
-    return result
+    print(result)
+    pass

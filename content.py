@@ -6,7 +6,7 @@ import numpy as np
 AXIS_ROWS = 0
 AXIS_COLUMNS = 1
 CLASSES_AMOUNT = 36
-NN_K = 1
+NN_K = 3
 
 # wczytuje dane ze zbioru - biore 6 tys egzemplarzy
 def get_main_data():
@@ -106,10 +106,12 @@ def run_program():
     y_valid = validate_data[1]
     from predict import predict
     predicted = predict(x_valid)
-    #print("BLAD KLASYFIKACJI:")
-    #print(classification_error(predicted,y_valid))
+    print("BLAD KLASYFIKACJI:")
+    print(classification_error(predicted,y_valid))
+    """
     print("PREDICTED")
     print(predicted)
     print("VALID")
     print(y_valid)
     print()
+    """

@@ -6,7 +6,7 @@ import numpy as np
 AXIS_ROWS = 0
 AXIS_COLUMNS = 1
 CLASSES_AMOUNT = 36
-NN_K = 5
+NN_K = 3
 DATA_AMOUNT = 12000
 
 ACTIVATION = 3
@@ -106,23 +106,6 @@ def p_y_x_knn(y, k):
 
     return countedClassesOccurences
 
-def classification_error(p_y_x, y_true):
-    """
-    Wyznacz blad klasyfikacji.
-    :param p_y_x: macierz przewidywanych prawdopodobienstw
-    :param y_true: zbior rzeczywistych etykiet klas 1xN.
-    Kazdy wiersz macierzy reprezentuje rozklad p(y|x)
-    :return: blad klasyfikacji
-    """
-
-    p_y_x = np.fliplr(p_y_x)
-    y_truea = p_y_x.shape[1] - np.argmax(p_y_x, axis=1)
-    y_truea = np.subtract(y_truea, y_true)
-    diff = np.count_nonzero(y_truea)
-    diff /= y_true.shape[0]
-
-    return diff
-
 def run_program():
     validate_data = get_validate_data()
     x_valid = validate_data[0]
@@ -148,6 +131,7 @@ def check_prediction(result_to_chech, y_true):
     return error_count * 1.0 / result_to_chech.shape[0]
 
 
+#Kompresja obrazów od Marcina:
 def compress_image_x2(image, activation):
     side = int(np.sqrt(image.shape[0]))
     new_size = image.shape[0] / 4

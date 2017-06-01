@@ -16,11 +16,11 @@ class TestRunner(unittest.TextTestRunner):
 class TestSuite(unittest.TestSuite):
     def __init__(self):
         super(TestSuite, self).__init__()
-        self.addTest(makeSuite(TestSigmoid))
+        self.addTest(makeSuite(TestPredict))
 
 
 
-class TestSigmoid(unittest.TestCase):
+class TestPredict(unittest.TestCase):
     def test_sigmoid(self):
         #save_data(get_compressed_data(),'trainCompressed.pkl')
         predicted = run_program()
